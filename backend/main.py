@@ -1,4 +1,3 @@
-import email
 import json
 import os
 import tempfile
@@ -46,8 +45,8 @@ def parse_eml(data: bytes) -> tuple[str, str, str]:
 def parse_msg(data: bytes) -> tuple[str, str, str]:
     try:
         import extract_msg
-    except ImportError:
-        raise HTTPException(status_code=500, detail="extract-msg not installed")
+    except ImportError as err:
+        raise HTTPException(status_code=500, detail="extract-msg not installed") from err
 
     with tempfile.NamedTemporaryFile(suffix=".msg", delete=False) as f:
         f.write(data)
@@ -91,7 +90,7 @@ def extract_with_claude(sender: str, subject: str, body: str) -> ExtractionResul
     try:
         data = json.loads(raw_json)
     except json.JSONDecodeError as e:
-        raise HTTPException(status_code=502, detail=f"LLM returned invalid JSON: {e}")
+        raise HTTPException(status_code=502, detail=f"LLM returned invalid JSON: {e}") from e
 
     return ExtractionResult(
         classification=data.get("classification", ""),
@@ -103,7 +102,7 @@ def extract_with_claude(sender: str, subject: str, body: str) -> ExtractionResul
 
 
 @app.post("/upload", response_model=ExtractionResult)
-async def upload(file: UploadFile = File(...)):
+async def upload(file: UploadFile = File()):
     filename = file.filename or ""
     if not (filename.lower().endswith(".eml") or filename.lower().endswith(".msg")):
         raise HTTPException(status_code=400, detail="Only .eml and .msg files are supported")

@@ -1,0 +1,109 @@
+Du bist ein Senior Software Architect.
+
+Ziel:
+Wir bauen ein internes Tool für den Angebots-Erstellungs-Prozess eines Versicherungsvermittlers.
+
+Business Flow:
+
+A) Eine Kunden-Email kommt rein
+B) Wir extrahieren strukturierte Informationen:
+   - Line of Business
+   - Risk Type
+   - Business Type (z.B. Supermarkt, Friseur)
+   - Relevante Rating-Faktoren (z.B. Quadratmeter)
+C) Wir gleichen die extrahierten Daten mit unserer Produkt-Logik ab
+D) Wir rufen eine Kalkulations-Engine auf
+E) Wir erzeugen ein Angebot
+
+WICHTIG:
+- Nicht implementieren.
+- Keine Business-Logik programmieren.
+- Keine Beispiel-Python-Implementierung.
+- Nur Architektur, Struktur, Interfaces, Contracts und Datenmodell beschreiben.
+- Fokus auf sauberer, erweiterbarer Architektur.
+
+------------------------------------
+TECHNISCHE RAHMENBEDINGUNGEN
+------------------------------------
+
+- PostgreSQL als Datenbank
+- Docker Compose für lokalen Start
+- Postgres MCP Server (https://github.com/crystaldba/postgres-mcp)
+- Python 3.12 (uv python pin 3.12)
+- System soll später erweiterbar sein (weitere Produkte, weitere LOBs)
+
+------------------------------------
+AUFGABEN
+------------------------------------
+
+1) Definiere:
+   - docker-compose Struktur (nur Services & Beschreibung)
+   - Postgres MCP Setup Beschreibung
+   - ENV Variablen Struktur
+
+2) Entwerfe ein sauberes Datenmodell mit folgenden Kern-Entitäten:
+
+   - LineOfBusiness
+   - RiskType
+   - Product
+   - ProductRule
+   - RatingFactor
+   - CustomerRequest
+   - Offer
+
+   Für jede Entität:
+   - Zweck
+   - Wichtige Attribute
+   - Beziehungen
+   - Design-Überlegungen
+
+3) Definiere eine modulare Service-Architektur:
+
+   - Email Intake Service
+   - Extraction Service
+   - Product Logic Service
+   - Rating Service
+   - Offer Service
+
+   Für jeden Service:
+   - Verantwortung
+   - Input/Output Contract
+   - Abhängigkeiten
+   - Erweiterbarkeit
+
+4) Beschreibe wie:
+   - Produktlogik regelbasiert modelliert werden kann (ohne Code)
+   - Versionierung von Produkten erfolgen sollte
+   - Kalkulationslogik vom Produkt getrennt wird
+   - Auditierbarkeit gewährleistet wird
+
+5) Definiere:
+   - API Boundary (intern)
+   - Event Flow (optional)
+   - Transaktionsstrategie
+
+6) Gib eine empfohlene Projektstruktur an.
+
+------------------------------------
+ARCHITEKTURPRINZIPIEN
+------------------------------------
+
+- Domain Driven Design (lightweight)
+- Klare Trennung von:
+  - Domäne
+  - Infrastruktur
+  - Applikationslogik
+- Kein technischer Overkill
+- MVP-fähig aber skalierbar
+- Multi-Produkt-fähig
+
+------------------------------------
+OUTPUT FORMAT
+------------------------------------
+
+Strukturiert.
+Mit klaren Abschnitten.
+Mit Diagramm in Textform (ASCII) für den Flow.
+Kein Code.
+
+Antworte auf Deutsch.

@@ -1,0 +1,40 @@
+# Angebots-Erstellungs-Prozess-Tool
+
+## Kurze Beschreibung
+
+A) Email kommt rein.
+B) Wir extrahieren was der Kunde will – z.B. Gewerbehaftpflicht für einen Supermarkt oder einen Friseur.
+C) Anreichern / Abgleichen mit der Produkt-Logik für die Erstellung des Angebots.
+D) Rufe mit den extrahierten Daten die Kalkulation auf.
+E) Wir erstellen ein Angebot zur Kundenanfrage.
+
+## Datenmodell
+
+- Line of Business
+- RiskType
+- Product
+- Produkt-Logic-Service
+
+## Setup
+
+### PostgreSQL (Docker Compose)
+
+```bash
+docker compose up -d
+```
+
+### Postgres MCP
+
+```bash
+claude mcp add --env DATABASE_URI=postgresql://myuser:mypassword@localhost:5432/mydb --scope project postgres -- uvx postgres-mcp --access-mode=unrestricted
+```
+
+Referenz: https://github.com/crystaldba/postgres-mcp
+
+### Python
+
+```bash
+uv python pin 3.12
+uv venv .venv
+uv sync
+```
