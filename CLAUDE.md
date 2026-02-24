@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git Hygiene
+
+**Always run `git fetch --all` before starting any task.** Check whether the current branch or `main` is behind its remote counterpart and inform the user if so. Never base work on a stale local state.
+
 ## Project Status
 
 This is a new project in early stages of development. As the project evolves, this file should be updated with:
