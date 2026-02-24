@@ -1,0 +1,6 @@
+[project]
+name = "ai-project"
+version = "0.1.0"
+description = "Angebots-Erstellungs-Tool für Versicherungsvermittler"
+requires-python = ">=3.12"
+dependencies = []
