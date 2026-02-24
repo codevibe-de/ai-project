@@ -1,0 +1,30 @@
+Angebots Erstellungs Prozess Tool-
+Kurze Beschreibung-
+
+A) Email kommt rein.
+B) Wir extrahieren was Kunde will - z.b. Gewerbe Haftplicht für einen Supermarkt oder einen Friseur
+C) Anreichen / Abgleichen der Product Logik, was wir die Erstellung des Angebots
+D) Rufe mit den extrahierten Projekten die Kalkulation auf.
+E) Wir erstellen ein Angebot zur Kundenanfrage.
+
+
+We need to create
+
+1- ein docker-compose für den start von Postgrees
+2-Postgress MCP definieren
+3 initale Schema-Datei
+
+Line of  Business
+Risktype
+Product
+
+Produkt logic server.
+
+
+claude mcp add --env DATABASE_URI=postgresql://myuser:mypassword@localhost:5432/mydb --scope project postgres -- uvx postgres-mcp --access-mode=unrestricted
+
+PostgresMCP
+
+https://github.com/crystaldba/postgres-mcp
+
+ggf. Python Version pinnen (uv python pin 3.12)
