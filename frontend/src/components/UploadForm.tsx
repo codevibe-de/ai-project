@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { uploadFile, ExtractionResult } from "../api";
+import { uploadFile } from "../api";
+import type { ExtractionResult } from "../api";
 
 interface Props {
   onResult: (result: ExtractionResult) => void;

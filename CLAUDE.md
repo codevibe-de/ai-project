@@ -15,37 +15,33 @@ Internal tool for automating the insurance quote generation process (Angebots-Er
 Email → Extract (LOB, RiskType, BusinessType, RatingFactors) → Match ProductLogic → Calculate → Generate Offer
 ```
 
-## Technology Stack
+- **Stack**: React + TypeScript (frontend), Python + FastAPI (backend)
+- **Build System**: Vite (frontend)
+- **Package Manager**: uv (backend), npm (frontend)
+- **Testing Framework**: To be determined
 
-- **Frontend:** React 19 + TypeScript + Vite + Tailwind CSS
-- **Backend:** Python 3.12 + FastAPI (not yet scaffolded)
-- **Database:** PostgreSQL 16 (Docker Compose)
-- **Package Manager:** uv (Python), npm (Frontend)
-- **Linting:** Ruff (Python), ESLint (Frontend)
-- **DB Access (dev):** Postgres MCP Server (`crystaldba/postgres-mcp`)
+## Architecture
+
+```
+frontend/   React + TypeScript + Tailwind, Vite dev server
+backend/    FastAPI, single POST /upload endpoint
+              - Parses .eml (stdlib) and .msg (extract-msg)
+              - Calls Claude API (anthropic SDK) for classification + field extraction
+              - Returns ExtractionResult JSON to frontend
+```
 
 ## Dev Commands
 
 ```bash
 # Frontend
-cd frontend && npm install   # Install dependencies
-cd frontend && npm run dev   # Vite dev server → http://localhost:5173
+cd frontend && npm run dev         # Vite dev server on http://localhost:5173
 
-# Python setup
-uv sync                      # Install Python dependencies
-source .venv/bin/activate    # Activate virtual environment
+# Backend — first-time setup
+cd backend && uv venv .venv --python 3.12
+uv pip install -r requirements.txt
 
-# Database
-docker compose up -d         # Start PostgreSQL on :5432
-
-# Linting
-uv run ruff check .          # Python lint
-uv run ruff check --fix .    # Python lint with auto-fix
-uv run ruff format .         # Python format
-cd frontend && npm run lint  # Frontend lint
-
-# Pre-commit
-uv run pre-commit run --all-files   # Run all hooks manually
+# Backend — run
+cd backend && ANTHROPIC_API_KEY=sk-... .venv/bin/uvicorn main:app --reload
 ```
 
 ## Architecture
