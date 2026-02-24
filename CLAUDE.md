@@ -57,8 +57,8 @@ Follows **lightweight Domain-Driven Design** with clear separation of Domain, In
 | Entity | Purpose |
 |---|---|
 | `LineOfBusiness` | Insurance category (e.g., commercial liability) |
-| `RiskType` | Type of risk within an LOB |
-| `Product` | Insurance product offering (versioned) |
+| `Product` | Insurance product offering (versioned), belongs to a LoB |
+| `RiskType` | Type of risk within a Product |
 | `ProductRule` | Declarative rule-based logic for product matching |
 | `RatingFactor` | Variables affecting pricing (e.g., square footage) |
 | `CustomerRequest` | Structured data extracted from a customer inquiry |

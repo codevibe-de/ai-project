@@ -18,27 +18,11 @@ CREATE TABLE line_of_business (
 );
 
 -- ============================================
--- Risk Type (Risikotyp innerhalb einer Sparte)
--- ============================================
-CREATE TABLE risk_type (
-    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    lob_id     UUID NOT NULL REFERENCES line_of_business(id),
-    code       VARCHAR(50)  NOT NULL UNIQUE,
-    name       VARCHAR(200) NOT NULL,
-    description TEXT,
-    is_active  BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_risk_type_lob_id ON risk_type(lob_id);
-
--- ============================================
 -- Product (Versicherungsprodukt)
 -- ============================================
 CREATE TABLE product (
     id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    risk_type_id  UUID NOT NULL REFERENCES risk_type(id),
+    lob_id        UUID NOT NULL REFERENCES line_of_business(id),
     code          VARCHAR(50)  NOT NULL,
     name          VARCHAR(200) NOT NULL,
     version       INTEGER NOT NULL DEFAULT 1,
@@ -51,8 +35,24 @@ CREATE TABLE product (
     UNIQUE (code, version)
 );
 
-CREATE INDEX idx_product_risk_type_id ON product(risk_type_id);
+CREATE INDEX idx_product_lob_id ON product(lob_id);
 CREATE INDEX idx_product_active ON product(is_active, valid_from, valid_until);
+
+-- ============================================
+-- Risk Type (Risikotyp innerhalb eines Produkts)
+-- ============================================
+CREATE TABLE risk_type (
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    product_id UUID NOT NULL REFERENCES product(id),
+    code       VARCHAR(50)  NOT NULL UNIQUE,
+    name       VARCHAR(200) NOT NULL,
+    description TEXT,
+    is_active  BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_risk_type_product_id ON risk_type(product_id);
 
 -- ============================================
 -- Product Rule (Regelbasierte Produktzuordnung)
