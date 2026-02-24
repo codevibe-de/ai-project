@@ -8,59 +8,75 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Internal tool for automating the insurance quote generation process (Angebots-Erstellungs-Prozess) for an insurance broker. The system processes incoming customer emails (.msg/.eml), extracts structured information, matches against product logic, invokes a calculation engine, and generates quotes.
+Internal tool for automating the insurance quote generation process (Angebots-Erstellungs-Prozess) for an insurance broker. The system processes incoming customer emails (.msg/.eml), extracts structured information via Claude AI, matches against product logic, invokes a calculation engine, and generates quotes.
 
 **Business Flow:**
 ```
-Email → Extract (LOB, RiskType, BusinessType, RatingFactors) → Match ProductLogic → Calculate → Generate Offer
+Email (.msg/.eml) → Extract (Claude LLM) → Match ProductLogic → Calculate → Generate Offer
 ```
 
-- **Stack**: React + TypeScript (frontend), Python + FastAPI (backend)
-- **Build System**: Vite (frontend)
-- **Package Manager**: uv (backend), npm (frontend)
-- **Testing Framework**: To be determined
+## Tech Stack
 
-## Architecture
-
-```
-frontend/   React + TypeScript + Tailwind, Vite dev server
-backend/    FastAPI, single POST /upload endpoint
-              - Parses .eml (stdlib) and .msg (extract-msg)
-              - Calls Claude API (anthropic SDK) for classification + field extraction
-              - Returns ExtractionResult JSON to frontend
-```
+- **Frontend:** React 19 + TypeScript + Vite + Tailwind CSS
+- **Backend:** Python 3.12 + FastAPI + Anthropic SDK
+- **Database:** PostgreSQL 16 (Docker Compose)
+- **Package Managers:** uv (Python), npm (Frontend)
+- **Linting:** Ruff (Python), ESLint (Frontend)
+- **CI:** GitHub Actions (Ruff check + format on push/PR to main)
 
 ## Dev Commands
 
 ```bash
 # Frontend
-cd frontend && npm run dev         # Vite dev server on http://localhost:5173
+cd frontend && npm install         # Install dependencies
+cd frontend && npm run dev         # Vite dev server → http://localhost:5173
+cd frontend && npm run build       # Production build
+cd frontend && npm run lint        # ESLint
 
 # Backend — first-time setup
 cd backend && uv venv .venv --python 3.12
 uv pip install -r requirements.txt
 
 # Backend — run
-cd backend && ANTHROPIC_API_KEY=sk-... .venv/bin/uvicorn main:app --reload
+cd backend && ANTHROPIC_API_KEY=sk-... .venv/bin/uvicorn main:app --reload  # API → http://localhost:8000
+
+# Database
+docker compose up -d               # PostgreSQL on :5432 (myuser/mypassword/mydb)
+
+# Python linting
+uv run ruff check .                # Lint
+uv run ruff check --fix .          # Lint with auto-fix
+uv run ruff format .               # Format
+uv run pre-commit run --all-files  # Run all pre-commit hooks
 ```
 
 ## Architecture
 
+```
+frontend/   React 19 + TypeScript + Tailwind, Vite dev server
+              - UploadForm: drag-and-drop .msg/.eml upload
+              - ResultCard: displays extraction results
+              - Calls POST http://localhost:8000/upload
+
+backend/    FastAPI, single POST /upload endpoint
+              - Parses .eml (stdlib email.parser) and .msg (extract-msg)
+              - Calls Claude API (anthropic SDK) for classification + field extraction
+              - Returns ExtractionResult JSON to frontend
+```
+
 Follows **lightweight Domain-Driven Design** with clear separation of Domain, Infrastructure, and Application Logic. MVP-first, multi-product-capable.
 
-### Core Data Model (7 entities, defined in `db/migrations/001_initial_schema.sql`)
+### Data Model Hierarchy (defined in `db/migrations/001_initial_schema.sql`)
 
-| Entity | Purpose |
-|---|---|
-| `LineOfBusiness` | Insurance category (e.g., commercial liability) |
-| `Product` | Insurance product offering (versioned), belongs to a LoB |
-| `RiskType` | Type of risk within a Product |
-| `ProductRule` | Declarative rule-based logic for product matching |
-| `RatingFactor` | Variables affecting pricing (e.g., square footage) |
-| `CustomerRequest` | Structured data extracted from a customer inquiry |
-| `Offer` | Generated quote with frozen rating snapshot |
+```
+LineOfBusiness → Product (versioned) → RiskType
+                    ├── ProductRule (declarative matching rules)
+                    └── RatingFactor (pricing variables)
 
-### Service Architecture (5 services, not yet implemented)
+CustomerRequest → Offer (with frozen rating_snapshot)
+```
+
+### Planned Service Architecture (not yet implemented)
 
 | Service | Responsibility |
 |---|---|
@@ -69,14 +85,6 @@ Follows **lightweight Domain-Driven Design** with clear separation of Domain, In
 | **Product Logic Service** | Matches `CustomerRequest` against `ProductRule`s |
 | **Rating Service** | Invokes calculation engine with matched product + factors |
 | **Offer Service** | Generates and stores the final `Offer` |
-
-### Frontend
-
-The frontend (`frontend/`) is a React 19 app with two main components:
-- **UploadForm** — Drag-and-drop file upload for .msg/.eml files
-- **ResultCard** — Displays extraction results (classification, sender, extracted fields)
-
-The frontend expects a backend API at `http://localhost:8000/upload` (POST, multipart/form-data).
 
 ### Design Principles
 
@@ -89,7 +97,8 @@ The frontend expects a backend API at `http://localhost:8000/upload` (POST, mult
 
 - `task` — Architecture specification (German), primary design document
 - `feature/postgress` — Database/MCP setup specification
-- `db/migrations/001_initial_schema.sql` — Initial PostgreSQL schema (7 tables)
-- `docker-compose.yml` — PostgreSQL 16 service (credentials: `myuser`/`mypassword`/`mydb`)
+- `backend/main.py` — FastAPI endpoint with Claude AI extraction logic
 - `frontend/src/api.ts` — API client interface defining the backend contract
-- `examples/` — Sample insurance inquiry emails (.eml, .msg)
+- `db/migrations/001_initial_schema.sql` — PostgreSQL schema (7 tables)
+- `docker-compose.yml` — PostgreSQL 16 service
+- `examples/` — Sample German insurance inquiry emails (.eml, .msg)
