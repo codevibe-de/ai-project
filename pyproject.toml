@@ -26,6 +26,9 @@ ignore = [
     "E501",  # line-length (handled by formatter)
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"backend/**" = ["B008"]  # FastAPI uses function calls (File, Depends, Query) in defaults
+
 [tool.ruff.lint.isort]
 known-first-party = ["quote_engine"]
 
