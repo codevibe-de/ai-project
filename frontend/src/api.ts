@@ -1,8 +1,22 @@
+export interface InsuranceInquiryData {
+  customer_name: string | null;
+  profession: string | null;
+  location: string | null;
+  insurance_type: string | null;
+  coverage_amount: string | null;
+  deductible: string | null;
+  insurance_year: number | null;
+  broker_name: string | null;
+  broker_email: string | null;
+  broker_phone: string | null;
+}
+
 export interface ExtractionResult {
-  classification: string;
   sender: string;
   subject: string;
-  extracted_fields: Record<string, string>;
+  risk_type_code: string | null;
+  risk_type_name: string | null;
+  data: InsuranceInquiryData;
   raw_body: string;
 }
 
