@@ -16,28 +16,41 @@ This is a new project in early stages of development. As the project evolves, th
 
 ## Current State
 
-- **Stack**: React + TypeScript (frontend), Python + FastAPI (backend — not yet scaffolded)
+- **Stack**: React + TypeScript (frontend), Python + FastAPI (backend)
 - **Build System**: Vite (frontend)
+- **Package Manager**: uv (backend), npm (frontend)
 - **Testing Framework**: To be determined
+
+## Architecture
+
+```
+frontend/   React + TypeScript + Tailwind, Vite dev server
+backend/    FastAPI, single POST /upload endpoint
+              - Parses .eml (stdlib) and .msg (extract-msg)
+              - Calls Claude API (anthropic SDK) for classification + field extraction
+              - Returns ExtractionResult JSON to frontend
+```
 
 ## Dev Commands
 
 ```bash
 # Frontend
-cd frontend && npm run dev   # Vite dev server on http://localhost:5173
+cd frontend && npm run dev         # Vite dev server on http://localhost:5173
 
-# Backend (not yet scaffolded)
-cd backend && uvicorn main:app --reload   # API server on http://localhost:8000
+# Backend — first-time setup
+cd backend && uv venv .venv --python 3.12
+uv pip install -r requirements.txt
+
+# Backend — run
+cd backend && ANTHROPIC_API_KEY=sk-... .venv/bin/uvicorn main:app --reload
 ```
 
 ## Getting Started
 
-When the project structure is established, document:
-1. How to set up the development environment
-2. Commands to build and run the application
-3. How to run tests and linting
-4. How to run individual tests during development
-5. Any architecture diagrams or high-level system design
+1. Set `ANTHROPIC_API_KEY` in your environment (or prefix the uvicorn command above)
+2. Start backend: `cd backend && .venv/bin/uvicorn main:app --reload`
+3. Start frontend: `cd frontend && npm run dev`
+4. Open http://localhost:5173 and upload an `.eml` or `.msg` insurance inquiry
 
 ## Future Updates
 
