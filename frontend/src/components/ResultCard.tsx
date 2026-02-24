@@ -1,4 +1,4 @@
-import { ExtractionResult } from "../api";
+import type { ExtractionResult } from "../api";
 
 interface Props {
   result: ExtractionResult;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ExtractionResult } from "./api";
+import type { ExtractionResult } from "./api";
 import UploadForm from "./components/UploadForm";
 import ResultCard from "./components/ResultCard";
 
