@@ -10,6 +10,10 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+# ANTHROPIC_AUTH_TOKEN="" in this environment poisons the Bearer header; unset it so
+# the SDK falls back to the X-Api-Key header using ANTHROPIC_API_KEY instead.
+os.environ.pop("ANTHROPIC_AUTH_TOKEN", None)
+
 app = FastAPI(title="OfferAssistant API")
 
 app.add_middleware(
@@ -19,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
+client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY; ANTHROPIC_AUTH_TOKEN already removed above
 
 
 class ExtractionResult(BaseModel):
