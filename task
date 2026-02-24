@@ -10,9 +10,7 @@ E) Wir erstellen ein Angebot zur Kundenanfrage.
 
 We need to create
 
-1- ein docker-compose für den start von Postgrees
-2-Postgress MCP definieren
-3 initale Schema-Datei
+1
 
 Line of  Business
 Risktype
